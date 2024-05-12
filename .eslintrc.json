@@ -1,0 +1,12 @@
+{
+  "extends": "@nhcarrigan",
+  "overrides": [
+    {
+      "files": ["src/modules/buttons/*.ts"],
+      "rules": {
+        "jsdoc/require-param": "off",
+        "jsdoc/require-returns": "off"
+      }
+    }
+  ]
+}

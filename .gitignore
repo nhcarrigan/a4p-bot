@@ -1,0 +1,5 @@
+/node_modules/
+/prod/
+.env
+/logs/*.txt
+latestAirtableRecord.txt

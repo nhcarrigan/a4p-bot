@@ -1,9 +1,4 @@
-import {
-  ChannelType,
-  Message,
-  PermissionFlagsBits,
-  TextChannel,
-} from "discord.js";
+import { ChannelType, Message, PermissionFlagsBits } from "discord.js";
 
 import { ExtendedClient } from "../interface/ExtendedClient";
 import { logTicketMessage } from "../modules/logTicketMessage";

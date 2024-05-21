@@ -65,6 +65,7 @@ export const onReactionAdd = async (
     const thread = await channel.threads.create({
       autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
       name: user.id,
+      startMessage: message,
     });
     await thread.members.add(user.id);
     await thread.send(ClaimTexts[message.author.id](user as User));

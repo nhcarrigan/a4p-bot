@@ -112,7 +112,10 @@ export const onMessageCreate = async (
         }
       }
 
-      if (message.channel.type === ChannelType.PublicThread) {
+      if (
+        message.channel.type === ChannelType.PublicThread &&
+        message.author.id === message.channel.name
+      ) {
         if (message.channel.parentId === "1172568787330019340") {
           const { attachments } = message;
           if (!attachments.size) {
@@ -123,18 +126,15 @@ export const onMessageCreate = async (
               "Accepting this as submission and closing out art request. Thanks for your support!",
           });
           const starter = await message.channel.fetchStarterMessage();
-          const distChannel = (await message.channel.guild.channels.fetch(
-            "1173061747737903315"
-          )) as TextChannel;
-          if (!starter || !distChannel) {
+          if (!starter) {
             await message.channel.send(
-              "<@!465650873650118659>, couldn't port this to distributor channel. Please port manually~!"
+              `<@!465650873650118659>, couldn't load starter message for ${message.url}. Please port manually~!`
             );
             await message.channel.setArchived(true);
             return;
           }
           await message.channel.setArchived(true);
-          await distChannel.send({
+          await bot.dist.send({
             content: starter.content,
             files: [...attachments.values()],
           });

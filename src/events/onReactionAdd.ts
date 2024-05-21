@@ -2,11 +2,12 @@ import {
   MessageReaction,
   PartialMessageReaction,
   PartialUser,
+  TextChannel,
+  ThreadAutoArchiveDuration,
   User,
 } from "discord.js";
 
-import { TrelloComments } from "../config/Trello";
-import { DMTexts } from "../config/Webhooks";
+import { ClaimTexts } from "../config/Webhooks";
 import { ExtendedClient } from "../interface/ExtendedClient";
 import { isValidWebhook } from "../utils/isValidWebhook";
 
@@ -49,58 +50,24 @@ export const onReactionAdd = async (
       await r.users.remove(user.id);
       return;
     }
-    const claimedByUser = await bot.db.rewards.findMany({
-      where: {
-        claimedBy: user.id,
-        completed: false,
-      },
-    });
-    if (claimedByUser.length >= 2) {
+
+    const channel = r.message.channel as TextChannel;
+    const claimedByUser = (await channel.threads.fetchActive()).threads.filter(
+      (t) => t.name === user.id
+    );
+    if (claimedByUser.size >= 2) {
       await r.users.remove(user.id);
       await user.send(
         "You currently have 2 open art rewards. Please do not claim another until you have completed one of your outstanding art works."
       );
       return;
     }
-    const files = [...message.attachments.values()];
-    await user
-      .send({
-        content: DMTexts[message.author.id](message),
-        files,
-      })
-      .catch(async (err) => {
-        await bot.debug.send({
-          content: `[Failed to DM ${user.username}:](<${r.message.url}>) ${err.message}`,
-        });
-      });
-    const trelloId =
-      message.content.split("You can ignore this it's just for the bot. ")[1] ||
-      message.content.split(
-        "You can ignore this ID it's just for the bot: "
-      )[1];
-    if (trelloId) {
-      await fetch(
-        `https://api.trello.com/1/cards/${trelloId}/actions/comments?text=${TrelloComments[
-          message.author.id
-        ](user.displayName || user.username || user.id)}&key=${
-          process.env.TRELLO_KEY
-        }&token=${process.env.TRELLO_TOKEN}`,
-        {
-          method: "POST",
-          headers: {
-            accept: "application/json",
-          },
-        }
-      );
-      await bot.db.rewards.update({
-        where: {
-          trelloId,
-        },
-        data: {
-          claimedBy: user.id,
-        },
-      });
-    }
+    const thread = await channel.threads.create({
+      autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+      name: user.id,
+    });
+    await thread.members.add(user.id);
+    await thread.send(ClaimTexts[message.author.id](user as User));
   } catch (err) {
     await bot.debug.send(
       `Error in processing new reaction: ${(err as Error).message}`

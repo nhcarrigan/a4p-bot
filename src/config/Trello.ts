@@ -41,6 +41,4 @@ export const TrelloComments: {
   [Webhooks.NewCommissions]: (userName) => `Artwork claimed by ${userName}.`,
   [Webhooks.CompleteCommissions]: (userName) =>
     `Distribution claimed by ${userName}.`,
-  [Webhooks.NewTest]: (userName) => `Artwork claimed by ${userName}.`,
-  [Webhooks.CompleteTest]: (userName) => `Distribution claimed by ${userName}.`,
 };

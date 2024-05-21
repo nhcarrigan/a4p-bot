@@ -1,4 +1,9 @@
-import { Message, PermissionFlagsBits } from "discord.js";
+import {
+  ChannelType,
+  Message,
+  PermissionFlagsBits,
+  TextChannel,
+} from "discord.js";
 
 import { ExtendedClient } from "../interface/ExtendedClient";
 import { logTicketMessage } from "../modules/logTicketMessage";
@@ -106,6 +111,48 @@ export const onMessageCreate = async (
           }
         }
       }
+
+      if (message.channel.type === ChannelType.PublicThread) {
+        if (message.channel.parentId === "1172568787330019340") {
+          const { attachments } = message;
+          if (!attachments.size) {
+            return;
+          }
+          await message.reply({
+            content:
+              "Accepting this as submission and closing out art request. Thanks for your support!",
+          });
+          const starter = await message.channel.fetchStarterMessage();
+          const distChannel = (await message.channel.guild.channels.fetch(
+            "1173061747737903315"
+          )) as TextChannel;
+          if (!starter || !distChannel) {
+            await message.channel.send(
+              "<@!465650873650118659>, couldn't port this to distributor channel. Please port manually~!"
+            );
+            await message.channel.setArchived(true);
+            return;
+          }
+          await message.channel.setArchived(true);
+          await distChannel.send({
+            content: starter.content,
+            files: [...attachments.values()],
+          });
+        }
+
+        if (message.channel.parentId === "1173061747737903315") {
+          const { attachments } = message;
+          if (!attachments.size) {
+            return;
+          }
+          await message.reply({
+            content:
+              "Accepting this as delivery confirmation and closing out distribution request. Thanks for your support!",
+          });
+          await message.channel.setArchived(true);
+        }
+      }
+
       return;
     }
     if (message.author.bot && !isValidWebhook(message.author.id)) {

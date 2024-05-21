@@ -4,8 +4,9 @@ import { ExtendedClient } from "../interface/ExtendedClient";
 import { checkAirtableRecords } from "../modules/checkAirtableRecords";
 import { fetchMessages } from "../modules/messages/fetchMessages";
 import { sendUnclaimedArt } from "../modules/reminders/sendUnclaimedArt";
+import { sendUnclaimedDistros } from "../modules/reminders/sendUnclaimedDistros";
 import { sendUnfinishedArt } from "../modules/reminders/sendUnfinishedArt";
-import { serve } from "../server/serve";
+import { sendUnfinishedDistros } from "../modules/reminders/sendUnfinsihedDistros";
 import { getNewsFeed } from "../utils/getNewsFeed";
 
 /**
@@ -29,13 +30,13 @@ export const onReady = async (bot: ExtendedClient) => {
 
     scheduleJob("0 9 * * 1,3,5", async () => {
       await sendUnclaimedArt(bot);
+      await sendUnclaimedDistros(bot);
     });
 
     scheduleJob("0 9 * * 6", async () => {
       await sendUnfinishedArt(bot);
+      await sendUnfinishedDistros(bot);
     });
-
-    await serve(bot);
   } catch (err) {
     await bot.debug.send(`Error on ready event: ${(err as Error).message}`);
   }

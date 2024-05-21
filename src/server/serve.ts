@@ -11,6 +11,8 @@ import { ExtendedClient } from "../interface/ExtendedClient";
 /**
  * Instantiates the web server for listening to webhook payloads.
  *
+ * TODO: Delete this entirely once all trello things are done.
+ *
  * @param {ExtendedClient} bot The bot's Discord instance.
  */
 export const serve = async (bot: ExtendedClient) => {
@@ -79,14 +81,6 @@ export const serve = async (bot: ExtendedClient) => {
       .find((s) => s.startsWith("Please contact them"));
     await bot.dist.send({
       content: `${card.name} | [Trello Card](<${card.url}>) | ${contact}\nYou can ignore this ID it's just for the bot: ${card.id}`,
-    });
-    await bot.db.rewards.update({
-      where: {
-        trelloId: card.id,
-      },
-      data: {
-        completed: true,
-      },
     });
   });
 

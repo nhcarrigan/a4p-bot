@@ -1,6 +1,5 @@
 import { execSync } from "child_process";
 
-import { PrismaClient } from "@prisma/client";
 import { Client, Events, GatewayIntentBits, WebhookClient } from "discord.js";
 
 import { onInteractionCreate } from "./events/onInteractionCreate";
@@ -32,14 +31,12 @@ import { logHandler } from "./utils/logHandler";
       GatewayIntentBits.GuildMembers,
     ],
   }) as ExtendedClient;
-  bot.db = new PrismaClient();
   bot.debug = new WebhookClient({ url: process.env.DEBUG });
   bot.comm = new WebhookClient({ url: process.env.COMM });
   bot.dist = new WebhookClient({ url: process.env.DIST });
   bot.news = new WebhookClient({ url: process.env.NEWS });
   bot.ticket = new WebhookClient({ url: process.env.TICKET });
   bot.ticketLogs = {};
-  await bot.db.$connect();
 
   const commit = execSync("git rev-parse HEAD").toString().trim();
 

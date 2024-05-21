@@ -1,3 +1,5 @@
+import { TextChannel } from "discord.js";
+
 import { ExtendedClient } from "../../interface/ExtendedClient";
 
 /**
@@ -7,16 +9,19 @@ import { ExtendedClient } from "../../interface/ExtendedClient";
  */
 export const sendUnclaimedArt = async (bot: ExtendedClient) => {
   try {
-    const unclaimed = await bot.db.rewards.findMany({
-      where: {
-        claimedBy: "",
-      },
+    const guild = await bot.guilds.fetch("1172566005311090798");
+    const artChannel = (await guild.channels.fetch(
+      "1172568787330019340"
+    )) as TextChannel;
+    const messages = await artChannel.messages.fetch({
+      after: "1241326793294610443",
     });
-    if (!unclaimed.length) {
+    const filtered = messages.filter((m) => !m.hasThread);
+
+    if (!filtered.size) {
       return;
     }
 
-    const guild = await bot.guilds.fetch("1172566005311090798");
     const channel = await guild.channels.fetch("1172568865218252801");
 
     if (!channel || !("send" in channel)) {
@@ -28,12 +33,7 @@ export const sendUnclaimedArt = async (bot: ExtendedClient) => {
 
 The following art rewards have not been claimed yet. If you have the capacity to do so, please consider taking one on.
 
-${unclaimed
-  .map(
-    (r) =>
-      `- https://discord.com/channels/1172566005311090798/1172568787330019340/${r.messageId}`
-  )
-  .join("\n")}`);
+${filtered.map((r) => `- ${r.url}`).join("\n")}`);
   } catch (err) {
     await bot.debug.send(`Cannot send unclaimed art reminder: ${err}`);
   }

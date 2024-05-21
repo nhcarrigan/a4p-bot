@@ -45,7 +45,8 @@ export const checkAirtableRecords = async (bot: ExtendedClient) => {
         Reference: images,
         "Contact Method": platform,
         Handle: handle,
-        "Anything Else?": note,
+        "What would you like us to draw?": note,
+        "Anything Else?": additional,
       } = record.fields;
       const files: AttachmentBuilder[] = [];
       for (const imageUrl of images) {
@@ -58,7 +59,10 @@ export const checkAirtableRecords = async (bot: ExtendedClient) => {
         files.push(file);
       }
       await bot.comm.send({
-        content: `**FOR:** ${name} - Contact via ${platform}: ${handle}\n\n${note}\n\nReferences:`,
+        content: `**FOR:** ${name} - Contact via ${platform}: ${handle}\n\n${note?.slice(
+          0,
+          1000
+        )}\n\n${additional?.slice(0, 1000)}\n\nReferences:`,
         files,
       });
       return;

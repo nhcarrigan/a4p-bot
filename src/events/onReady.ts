@@ -8,6 +8,7 @@ import { sendUnclaimedDistros } from "../modules/reminders/sendUnclaimedDistros"
 import { sendUnfinishedArt } from "../modules/reminders/sendUnfinishedArt";
 import { sendUnfinishedDistros } from "../modules/reminders/sendUnfinsihedDistros";
 import { getNewsFeed } from "../utils/getNewsFeed";
+import { serve } from "../server/serve";
 
 /**
  * Handles the logic when the bot is ready to receive Discord events.
@@ -37,6 +38,7 @@ export const onReady = async (bot: ExtendedClient) => {
       await sendUnfinishedArt(bot);
       await sendUnfinishedDistros(bot);
     });
+    await serve(bot);
   } catch (err) {
     await bot.debug.send(`Error on ready event: ${(err as Error).message}`);
   }

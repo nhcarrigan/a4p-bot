@@ -129,7 +129,7 @@ export const serve = async (bot: ExtendedClient) => {
     muted="true"
     playsinline="true"
     src="https://cdn.nhcarrigan.com/overlay.webm"
-    style="pointerEvents: none; position: fixed; top: 0; left: 0; opacity: 0.25;">
+    style="pointer-events: none; position: fixed; top: 0; left: 0; opacity: 0.25;">
   </video>
   <script
       async="true"

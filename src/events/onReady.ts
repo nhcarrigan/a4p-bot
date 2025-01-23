@@ -7,8 +7,8 @@ import { sendUnclaimedArt } from "../modules/reminders/sendUnclaimedArt";
 import { sendUnclaimedDistros } from "../modules/reminders/sendUnclaimedDistros";
 import { sendUnfinishedArt } from "../modules/reminders/sendUnfinishedArt";
 import { sendUnfinishedDistros } from "../modules/reminders/sendUnfinsihedDistros";
-import { getNewsFeed } from "../utils/getNewsFeed";
 import { serve } from "../server/serve";
+import { getNewsFeed } from "../utils/getNewsFeed";
 
 /**
  * Handles the logic when the bot is ready to receive Discord events.

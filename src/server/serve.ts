@@ -1,11 +1,9 @@
-import { createHmac } from "crypto";
 import { readFile } from "fs/promises";
 import http from "http";
 import https from "https";
 
 import express from "express";
 
-import { Trello } from "../config/Trello";
 import { ExtendedClient } from "../interface/ExtendedClient";
 
 /**

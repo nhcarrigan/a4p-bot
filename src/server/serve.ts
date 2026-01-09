@@ -1,6 +1,4 @@
-import { readFile } from "fs/promises";
 import http from "http";
-import https from "https";
 
 import express from "express";
 
@@ -62,31 +60,4 @@ export const serve = async (bot: ExtendedClient) => {
   httpServer.listen(10080, async () => {
     await bot.debug.send("http server listening on port 10080");
   });
-
-  if (process.env.NODE_ENV === "production") {
-    const privateKey = await readFile(
-      "/etc/letsencrypt/live/afp.nhcarrigan.com/privkey.pem",
-      "utf8"
-    );
-    const certificate = await readFile(
-      "/etc/letsencrypt/live/afp.nhcarrigan.com/cert.pem",
-      "utf8"
-    );
-    const ca = await readFile(
-      "/etc/letsencrypt/live/afp.nhcarrigan.com/chain.pem",
-      "utf8"
-    );
-
-    const credentials = {
-      key: privateKey,
-      cert: certificate,
-      ca: ca,
-    };
-
-    const httpsServer = https.createServer(credentials, app);
-
-    httpsServer.listen(10443, async () => {
-      await bot.debug.send("https server listening on port 10443");
-    });
-  }
 };
